@@ -26,7 +26,7 @@ var app = new Vue({
             await axios
                 .post('/init', data)
                 .then(response => {
-                    this.raw = response.data
+                    this.raw = response.data;
                     this.id = response.data.id
                 });
             this.refresh();
@@ -36,18 +36,33 @@ var app = new Vue({
             this.isEnd = data.isEnd;
             this.floor_map = data.map.cells;
             let room = data.map.rooms[data.roomId];
+            let x, y;
+            if(this.mode === "4"){
+                y = data.y;
+                x = data.x;
+            }else {
+                y = data.y + room.origin[0];
+                x = data.x + room.origin[1];
+            }
             if (this.isEnd) {
-                if (this.floor_map[data.y + room.origin[0]][data.x + room.origin[1]] === 5) {
+                if (this.floor_map[y][x] === 5) {
                     this.reset();
                     return
                 }
-                this.floor_map[data.y + room.origin[0]][data.x + room.origin[1]] = 6;
+                this.floor_map[y][x] = 6;
             } else {
-                this.floor_map[data.y + room.origin[0]][data.x + room.origin[1]] = 3;
+                this.floor_map[y][x] = 3;
             }
             data.enemies.forEach(enemy => {
                 if(enemy.x > -1 && enemy.y > -1){
-                    this.floor_map[enemy.y + room.origin[0]][enemy.x + room.origin[1]] = 4;
+                    if(this.mode === "4"){
+                        y = enemy.y;
+                        x = enemy.x;
+                    }else {
+                        y = enemy.y + room.origin[0];
+                        x = enemy.x + room.origin[1];
+                    }
+                    this.floor_map[y][x] = 4;
                 }
             });
         },
@@ -61,7 +76,7 @@ var app = new Vue({
             axios
             .get('/info/'+this.id)
             .then(response => {
-                if(this.mode == "1"){
+                if(this.mode === "1"){
                     console.log(response.data);
                     this.raw = response.data;
                 }else{

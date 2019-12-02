@@ -1,7 +1,7 @@
 import random
 from typing import Dict
 from bottle import *
-from simulator import Simulator, RoomGraphSimulator, CellMoveSimulator, Simulator2
+from simulator import Simulator, RoomGraphSimulator, CellMoveSimulator, Simulator2, AdvancedSimulator2
 
 simulators: Dict[int, Simulator] = {}
 
@@ -28,8 +28,10 @@ def init():
         simulator = RoomGraphSimulator()
     elif mode == 2:
         simulator = CellMoveSimulator(data)
-    else:
+    elif mode == 3:
         simulator = Simulator2(data)
+    else:
+        simulator = AdvancedSimulator2()
     simulators[id(simulator)] = simulator
     return {'id': id(simulator)}
 
@@ -71,4 +73,4 @@ def log_file(filename: str):
 
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    run(host='0.0.0.0', port=8081, debug=True, reloader=True)

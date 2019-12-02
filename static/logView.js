@@ -8,6 +8,7 @@ var app = new Vue({
         index: 0,
         action: '',
         intervalId: 0,
+        rewardSum: 0,
     },
     async mounted() {
         await axios.get('/log/list').then(response => {
@@ -32,6 +33,7 @@ var app = new Vue({
             this.index = 0;
             axios.get('/log/'+this.log).then(response => {
                 this.raw = response.data;
+                this.rewardSum = response.data.rewardSum;
                 this.setAgent();
             });
         },
@@ -42,8 +44,9 @@ var app = new Vue({
             if(this.index >= this.raw.moveLog.length-1){
                 if(this.floor_map[agent.y][agent.x] !== 5){
                     this.floor_map[agent.y][agent.x] = 6;
+                }else {
+                    this.floor_map[agent.y][agent.x] = 3;
                 }
-                this.floor_map[agent.y][agent.x] = 3;
             }else{
                 this.floor_map[agent.y][agent.x] = 3;
             }

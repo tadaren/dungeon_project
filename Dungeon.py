@@ -87,6 +87,8 @@ class Dungeon:
         self.room_info: List[RoomInfo] = []
         # 通路
         self.roads: List[Road] = []
+        # 通路のid用のindex
+        self._road_count = 0
 
         # 初期化
         self._div_floor(0, 0, row, column)
@@ -99,7 +101,7 @@ class Dungeon:
         if not no_generate_enemy:
             self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
-        self.print_floor_map()
+        # self.print_floor_map()
 
     # フロアマップを分割する
     def _div_floor(self, row_s, column_s, row_e, column_e):
@@ -162,6 +164,7 @@ class Dungeon:
     def _print_rooms2map(self):
         for room in self.rooms:
             room.print_to_map(self.floor_map)
+            room.protect_corner(self.floor_map)
 
     # 部屋を通路で繋げる
     def _connect_rooms(self):
@@ -174,7 +177,8 @@ class Dungeon:
                     break
 
     def _create_road(self, room1_info, room1, room2_info, room2):
-        road = Road(room1, room1_info, room2, room2_info)
+        road = Road(room1, room1_info, room2, room2_info, self._road_count)
+        self._road_count += 1
         if not road.can_connect:
             return False
         self.roads.append(road)
@@ -187,6 +191,7 @@ class Dungeon:
         index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int((index // room_map.shape[1])) + goal_room.origin[0]
         x = int((index % room_map.shape[1])) + goal_room.origin[1]
+        self.goal_position = (x, y)
 
         self.floor_map[y][x] = CellInfo.GOAL
         return room_index
@@ -227,7 +232,7 @@ class Dungeon:
 
     def set_protected_area(self):
         for road in self.roads:
-            for road_end_position in road.ends:
+            for road_end_position in road.ends.values():
                 for v in FOUR_DIRECTION_VECTOR:
                     x = road_end_position[0]+v[0]
                     y = road_end_position[1]+v[1]

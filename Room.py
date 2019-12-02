@@ -50,22 +50,27 @@ class Room:
         self.origin = [row_s + center[0], column_s + center[1]]
         self.size = [height, width]
 
-    def print_to_map(self, floor_map: np.ndarray):
+    def protect_corner(self, floor_map: np.ndarray):
         from Dungeon import CellInfo
-        floor_map[
-                self.origin[0]:self.origin[0] + self.size[0],
-                self.origin[1]:self.origin[1] + self.size[1]] = CellInfo.ROOM
         # 角にエージェントが生成されないようにする
         floor_map[self.origin[0], self.origin[1]] = CellInfo.PROTECTED
         floor_map[self.origin[0] + self.size[0] - 1, self.origin[1]] = CellInfo.PROTECTED
         floor_map[self.origin[0], self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
         floor_map[self.origin[0] + self.size[0] - 1, self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
 
+    def print_to_map(self, floor_map: np.ndarray):
+        from Dungeon import CellInfo
+        floor_map[
+                self.origin[0]:self.origin[0] + self.size[0],
+                self.origin[1]:self.origin[1] + self.size[1]] = CellInfo.ROOM
+
     def info(self):
         return {
             'id': self.id,
             'origin': self.origin,
             'size': self.size,
+            'roadEnds': [road.ends[self.id] for road in self.roads],
+            'roads': [road.info() for road in self.roads]
         }
 
     def dump2json(self):
