@@ -99,9 +99,14 @@ def state_tuple(state, selector):
     x = state['x']
     y = state['y']
     destination_x, destination_y, index = selector.next(state)
+    if index == -1:
+        align = 0
+    else:
+        align = state['map']['rooms'][state['roomId']]['roads'][index]['align']
     return (
         destination_x - x + 20,
         destination_y - y + 15,
+        align,
         enemies[0][0],
         enemies[0][1],
         enemies[1][0],
@@ -114,8 +119,8 @@ def main():
     simulator = AdvancedSimulator3()
     alpha = 0.1
     gamma = 0.8
-    q = np.random.random((43, 33, 5, 5, 5, 5, 5))
-    eps = np.full((43, 33, 5, 5, 5, 5), 0.99)
+    q = np.random.random((43, 33, 2, 5, 5, 5, 5, 5))
+    eps = np.full((43, 33, 2, 5, 5, 5, 5), 0.99)
 
     max_step = 1000000
     for step in range(max_step):
@@ -132,7 +137,7 @@ def main():
                 eps[s]
             )
             action = int(action)
-            eps[s] *= 0.99
+            eps[s] *= 0.999
             reward = simulator.action({'action': action, 'roadId': index})
             sum_reward += reward
 

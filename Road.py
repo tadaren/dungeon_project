@@ -69,6 +69,7 @@ class Road:
                     self.cells.append((room2_info.bottom, j))
             # 通路の端の座標を登録
             self.ends = {room1.id: (x1, y1), room2.id: (x2, y2)}
+            self.align = 0
 
         # 左右に接続している
         if room1_info.left == room2_info.right + 1 or room1_info.right + 1 == room2_info.left:
@@ -112,6 +113,7 @@ class Road:
                     self.cells.append((j, room2_info.right))
             # 通路の端の座標を登録
             self.ends = {room1.id: (x1, y1), room2.id: (x2, y2)}
+            self.align = 1
         # 各部屋に通路を登録
         room1.roads.append(self)
         room2.roads.append(self)
@@ -127,6 +129,7 @@ class Road:
             'room1Id': self.connected_rooms[0].id,
             'room2Id': self.connected_rooms[1].id,
             'ends': self.ends,
+            'align': self.align,
         }
 
     def dump2json(self):
