@@ -93,11 +93,14 @@ class CellMoveSimulator(Simulator):
     def reset(self):
         self.is_end = False
         self.turn = 0
-        if self.first_room is None or self.first_room < 0:
-            first_room: Room = random.choice(self.dungeon.rooms)
-        else:
-            first_room: Room = self.dungeon.rooms[self.first_room]
-        x, y = self._get_random_position(first_room)
+        x, y = -1, -1
+        first_room = None
+        while x == -1 or y == -1:
+            if self.first_room is None or self.first_room < 0:
+                first_room: Room = random.choice(self.dungeon.rooms)
+            else:
+                first_room: Room = self.dungeon.rooms[self.first_room]
+            x, y = self._get_random_position(first_room)
         self.friend_agent = Friend(y, x, first_room.id)
         self._load_enemy(first_room.id)
 
