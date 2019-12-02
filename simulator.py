@@ -377,6 +377,10 @@ class AdvancedSimulator2(CellMoveSimulator):
 
         self._move_agent_four_direction(action)
 
+        if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
+            self.is_end = True
+            return 100
+
         self._enemy_action()
 
         if self.turn > self.max_turn:
@@ -405,11 +409,6 @@ class AdvancedSimulator2(CellMoveSimulator):
                 return 100
             else:
                 return -100
-
-        if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
-            self.is_end = True
-            return 100
-
         return -1
 
     def info(self):
@@ -461,7 +460,7 @@ class AdvancedSimulator3(AdvancedSimulator2):
     def save(self):
         now = datetime.datetime.now()
         self.clear_map[self.dungeon.goal_position[1]][self.dungeon.goal_position[0]] = CellInfo.GOAL
-        with open(f'log/{now.strftime("%Y%m%d_%H%M%S")}.log', 'w') as file:
+        with open(f'log2/{now.strftime("%Y%m%d_%H%M%S")}.log', 'w') as file:
             json.dump({
                 # 'rewardSum': self.reward_sum,
                 'cellMap': [[e.value for e in line] for line in self.clear_map],
