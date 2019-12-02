@@ -18,6 +18,9 @@ class RoomSelector:
                         self.before_room_id and road['room2Id'] == room_id:
                     self.road_visit_count[road['id']] += 1
             self.before_room_id = room_id
+        if room_id == state['goalRoomId']:
+            x, y = state['goalPosition']
+            return x, y, -1
         roads = [(self.road_visit_count[road['id']], i) for i, road in enumerate(room['roads'])]
         _, index = sorted(roads)[0]
         x, y = room['roadEnds'][index]
@@ -143,7 +146,7 @@ def main():
 
         simulator.reset()
         print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
-        simulator.dungeon.print_floor_map()
+        # simulator.dungeon.print_floor_map()
         # time.sleep(1)
 
 
