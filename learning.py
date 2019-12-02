@@ -27,50 +27,6 @@ class RoomSelector:
         return x, y, index
 
 
-# def search(state):
-#     global before_search
-#     room_id = state['roomId']
-#     room = state['map']['rooms'][room_id]
-#     if room_id == state['goalRoomId']:
-#         return state['goalPosition'][0], state['goalPosition'][1], -1
-#     if before_search[0] == room_id:
-#         return before_search[1], before_search[2], before_search[3]
-#     if len(road_log) >= 2 and room_id == road_log[-2]:
-#         road_log.pop()
-#         road_log.pop()
-#     # 部屋を移動していたらログに道のidを入れる
-#     for road in room['roads']:
-#         if road['room1Id'] == room_id and road['room2Id'] == before_search[0] or road['room1Id'] == before_search[0] and road['room2Id'] == room_id:
-#             road_log.append(road['id'])
-#     print('road_log: ', road_log)
-#     road_used = state['roadUsed']
-#     road_indexes = [i for i, road in enumerate(room['roads']) if not road_used[road['id']]]
-#     print('road_used', road_used)
-#     print('road_indexes', road_indexes)
-#     print('roads', room['roads'])
-#     print('before', before_search)
-#     print('room_id', room_id)
-#     if not road_indexes:
-#         last_road = road_log[-1]
-#         road_log.pop()
-#         for i, road in enumerate(room['roads']):
-#             if road['id'] == last_road:
-#                 x, y = room['roadEnds'][i]
-#                 before_search = (room_id, x, y, i)
-#                 print(x, y, i)
-#                 return x, y, i
-#         if len(room['roads']) == 1:
-#             before_search = (room_id, room['roadEnds'][0][0], room['roadEnds'][0][1], 0)
-#             print(room['roadEnds'][0][0], room['roadEnds'][0][1], 0)
-#             return room['roadEnds'][0][0], room['roadEnds'][0][1], 0
-#     index = random.choice(road_indexes)
-#     x, y = room['roadEnds'][index]
-#     # road_log.append(room['roads'][index]['id'])
-#     before_search = (room_id, x, y, index)
-#     print(x, y, index)
-#     return x, y, index
-
-
 def select_action(actions: np.ndarray, eps):
     r = random.random()
     if r < eps:
