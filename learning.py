@@ -71,7 +71,6 @@ def state_tuple(state, selector):
 
 
 def main():
-    random.seed(14)
     simulator = AdvancedSimulator3()
     alpha = 0.1
     gamma = 0.8
