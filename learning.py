@@ -78,6 +78,7 @@ def main():
     eps = np.full((43, 33, 2, 5, 5, 5, 5), 0.99)
 
     max_step = 1000000
+    save_step_interval = 50000
     for step in range(max_step):
         state = simulator.info()
         room_selector = RoomSelector(state)
@@ -104,10 +105,15 @@ def main():
             state = next_state
             s = next_s
 
+        if step % save_step_interval == 0:
+            simulator.save()
+
         simulator.reset()
         print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
         # simulator.dungeon.print_floor_map()
         # time.sleep(1)
+
+    np.save('advanced_q_table.npy', q)
 
 
 if __name__ == '__main__':

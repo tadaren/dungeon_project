@@ -446,8 +446,6 @@ class AdvancedSimulator3(AdvancedSimulator2):
             'enemies': [enemy.__dict__.copy() for enemy in self.enemy_list],
             'action': action['action'],
         })
-        if self.is_end:
-            self.save()
 
         return reward
 
