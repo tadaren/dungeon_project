@@ -72,14 +72,17 @@ class Dungeon:
         self.floor_map: np.ndarray = np.full((self.row, self.column), CellInfo.WALL, dtype=object)
         self.icon = ["■", "　"]
         # 区画の最小サイズ(5分割)
-        self.min_div_size = [row / 5 + 1, column / 5 + 1]
-        self.div_max = 2
+        # self.min_div_size = [row / 5 + 1, column / 5 + 1]
+        self.min_div_size = [9, 9]
+        self.div_max = 5
         self.div_count = 0
 
         # 部屋の最小サイズ
-        self.min_room_size = [row / 5 - 2, column / 5 - 2]
+        # self.min_room_size = [row / 5 - 2, column / 5 - 2]
+        self.min_room_size = [6, 6]
         Room.min_room_size = self.min_room_size
-        self.max_room_size = [row / 2, column / 2]
+        # self.max_room_size = [row / 2, column / 2]
+        self.max_room_size = [15, 20]
         Room.max_room_size = self.max_room_size
         # 部屋
         self.rooms: List[Room] = []
@@ -100,7 +103,7 @@ class Dungeon:
         self.goal_room_index = self._generate_goal()
         if not no_generate_enemy:
             self._generate_enemy()
-        self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
+        # self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         # self.print_floor_map()
 
     # フロアマップを分割する
@@ -108,7 +111,11 @@ class Dungeon:
         self.div_count += 1
         # 縦に分割
         # 横方向に領域を取得
-        p = random.randint(self.min_div_size[1], (column_e - column_s) - self.min_div_size[1])
+        try:
+            p = random.randint(self.min_div_size[1], column_e - column_s - self.min_div_size[1])
+        except ValueError:
+            self.room_info.append(RoomInfo(row_s, column_s, row_e, column_e))
+            return
         p = p if p % 2 == 0 else p + 1
         # 境界線を描く
         for row in range(row_s, row_e):
@@ -130,7 +137,11 @@ class Dungeon:
             self.room_info.append(RoomInfo(row_s, column_end + 1, row_e, column_e))
 
         # 縦方向に領域を取得
-        q = random.randint(self.min_div_size[0], (row_e - row_s) - self.min_div_size[0])
+        try:
+            q = random.randint(self.min_div_size[0], row_e - row_s - self.min_div_size[0])
+        except ValueError:
+            self.room_info.append(RoomInfo(row_s, column_s + 1, row_e, column_end))
+            return
         q = q if q % 2 == 0 else q + 1
 
         # 横方向に境界線を描く
@@ -158,7 +169,12 @@ class Dungeon:
     # 区画内に部屋を作る
     def _make_rooms(self):
         for i, room_data in enumerate(self.room_info):
-            self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right, i))
+            try:
+                self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right, i))
+            except ValueError:
+                print('Value Error')
+                self.print_floor_map()
+                continue
 
     # マップに部屋のマスを描画
     def _print_rooms2map(self):
@@ -171,7 +187,7 @@ class Dungeon:
         for i in range(len(self.room_info)-1):
             self._create_road(self.room_info[i], self.rooms[i], self.room_info[i+1],  self.rooms[i+1])
 
-            for j in range(i+2, len(self.room_info)-1):
+            for j in range(i+2, len(self.room_info)):
                 is_connected = self._create_road(self.room_info[i], self.rooms[i], self.room_info[j],  self.rooms[j])
                 if is_connected:
                     break
@@ -185,7 +201,7 @@ class Dungeon:
         return True
 
     def _generate_goal(self):
-        room_index = random.randint(0, 4)
+        room_index = random.randint(0, len(self.rooms)-1)
         goal_room = self.rooms[room_index]
         room_map = self.get_room_map(goal_room)
         index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
