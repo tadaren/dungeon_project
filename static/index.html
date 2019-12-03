@@ -22,10 +22,12 @@
     <div>turn: {{ index }}</div>
     <div>action: {{ action }}</div>
 
-    <div id="field">
-      <div v-for="line in floor_map" class="line">
-        <div v-for="e in line">
-          <div :class="{room: e===1, road: e===2, agent: e===3, enemy: e===4, goal: e===5, dead: e===6}" class="cell"></div>
+    <div id="game">
+      <div id="field">
+        <div v-for="line in floor_map" class="line">
+          <div v-for="e in line">
+            <div :class="{room: e===1, road: e===2, agent: e===3, enemy: e===4, goal: e===5, dead: e===6}" class="cell"></div>
+          </div>
         </div>
       </div>
     </div>
