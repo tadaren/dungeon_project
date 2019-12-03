@@ -77,8 +77,8 @@ def main():
     q = np.random.random((43, 33, 2, 5, 5, 5, 5, 5))
     eps = np.full((43, 33, 2, 5, 5, 5, 5), 0.99)
 
-    max_step = 1000000
-    save_step_interval = 50000
+    max_step = 10000000
+    save_step_interval = 500000
     for step in range(max_step):
         state = simulator.info()
         room_selector = RoomSelector(state)
@@ -93,7 +93,8 @@ def main():
                 eps[s]
             )
             action = int(action)
-            eps[s] *= 0.999
+            eps[s] *= 0.9999
+            eps[s] = max(0.1, eps[s])
             reward = simulator.action({'action': action, 'roadId': index})
             sum_reward += reward
 
