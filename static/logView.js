@@ -7,7 +7,7 @@ var app = new Vue({
         floor_map: [[]],
         index: 0,
         action: '',
-        intervalId: 0,
+        intervalIds: [],
         rewardSum: 0,
     },
     async mounted() {
@@ -78,7 +78,7 @@ var app = new Vue({
             this.setAgent();
         },
         play: function(){
-            this.intervalId = setInterval(function(){
+            let intervalId = setInterval(function(){
                 if(app.index >= app.raw.moveLog.length - 1){
                     app.index = 0;
                     app.setAgent();
@@ -86,9 +86,10 @@ var app = new Vue({
                 }
                 app.next();
             }, 200);
+            this.intervalIds.push(intervalId);
         },
         stop: function(){
-            clearInterval(this.intervalId);
+            clearInterval(this.intervalIds.pop());
         },
         onKeyDown: function(keyCode){
             switch(keyCode){
