@@ -103,7 +103,7 @@ class Dungeon:
         self.goal_room_index = self._generate_goal()
         if not no_generate_enemy:
             self._generate_enemy()
-        # self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
+        self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         # self.print_floor_map()
 
     # フロアマップを分割する
@@ -201,8 +201,7 @@ class Dungeon:
         return True
 
     def _generate_goal(self):
-        room_index = random.randint(0, len(self.rooms)-1)
-        goal_room = self.rooms[room_index]
+        goal_room = random.choice(self.rooms)
         room_map = self.get_room_map(goal_room)
         index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int((index // room_map.shape[1])) + goal_room.origin[0]
@@ -210,7 +209,7 @@ class Dungeon:
         self.goal_position = (x, y)
 
         self.floor_map[y][x] = CellInfo.GOAL
-        return room_index
+        return goal_room.id
 
     def _generate_enemy(self):
         for room in self.rooms:

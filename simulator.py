@@ -341,7 +341,7 @@ class AdvancedSimulator1(RoomGraphSimulator):
 
 class AdvancedSimulator2(CellMoveSimulator):
     def __init__(self):
-        dungeon = Dungeon(30, 40, no_generate_enemy=True)
+        dungeon = Dungeon(90, 120, no_generate_enemy=True)
         super().__init__({'randomEnemy': True}, dungeon)
         self.clear_map = self.map.copy()
         self.clear_map[self.clear_map == CellInfo.ROOM] = CellInfo.WALL
@@ -353,7 +353,7 @@ class AdvancedSimulator2(CellMoveSimulator):
         self.dungeon.print_floor_map()
 
     def reset(self):
-        self.dungeon = Dungeon(30, 40, no_generate_enemy=True)
+        self.dungeon = Dungeon(90, 120, no_generate_enemy=True)
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
         self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM

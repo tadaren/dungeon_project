@@ -1,4 +1,5 @@
 import random
+import sys
 from typing import Dict
 from bottle import *
 from simulator import Simulator, RoomGraphSimulator, CellMoveSimulator, Simulator2, AdvancedSimulator2
@@ -63,14 +64,15 @@ def reset(_id: int):
 @get('/log/list')
 def log_list():
     return {
-        'list': sorted([f for f in os.listdir('log/') if f[-4:] == '.log'], reverse=True)
+        'list': sorted([f for f in os.listdir(log_dir) if f[-4:] == '.log'], reverse=True)
     }
 
 
 @get('/log/<filename>')
 def log_file(filename: str):
-    return static_file(filename, './log')
+    return static_file(filename, log_dir)
 
 
 if __name__ == '__main__':
+    log_dir = sys.argv[1]
     run(host='0.0.0.0', port=8081, debug=True, reloader=True)
