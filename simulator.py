@@ -181,6 +181,8 @@ class CellMoveSimulator(Simulator):
             room = self.dungeon.rooms[room_id]
             for e in self.enemy_list:
                 x, y = self._get_random_position(room)
+                while x == self.friend_agent.x and y == self.friend_agent.y:
+                    x, y = self._get_random_position(room)
                 e.x = x
                 e.y = y
         else:
